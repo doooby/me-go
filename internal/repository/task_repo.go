@@ -6,9 +6,9 @@ import (
 	"time"
 )
 
-func CreateTask(caption, text string) error {
-	query := `INSERT INTO tasks (caption, text, start_time) VALUES (?, ?, ?)`
-	_, err := db.DB.Exec(query, caption, text, time.Now())
+func CreateTask(taskName string, message string) error {
+	query := `INSERT INTO tasks (task, message, start_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`
+	_, err := db.DB.Exec(query, taskName, message, time.Now(), time.Now(), time.Now())
 	return err
 }
 

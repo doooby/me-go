@@ -2,37 +2,21 @@ package db
 
 import (
 	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
 	"log"
-
-	_ "github.com/mattn/go-sqlite3" // Import sqlite3 driver
 )
 
 var DBPath = "var/db.sqlite"
 var DB *sql.DB
 
-
-func InitDB(filepath string) {
+func InitDB() {
 	var err error
-	DB, err = sql.Open(DBPath, filepath)
+	DB, err = sql.Open("sqlite3", DBPath)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	validateDatabase()
-
-	createTableSQL := `CREATE TABLE IF NOT EXISTS tasks (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		task TEXT NOT NULL,
-		message TEXT,
-		start_at TEXT NOT NULL,
-		end_at TEXT,
-		created_at TEXT NOT NULL,
-		updated_at TEXT NOT NULL
-	);`
-
-	_, err = DB.Exec(createTableSQL)
-	if err != nil {
-		log.Fatal("Failed to create table:", err)
-	}
 }
 
 func validateDatabase() {
