@@ -17,14 +17,14 @@ func StrToInt64(input string) (int64, error) {
 	return num, nil
 }
 
-const TimeLayout = "2006-01-02 15:04:05 -07:00"
+const timeLayout = "2006-01-02 15:04 -07:00"
 
 func TimeToStr(t time.Time) string {
-	return t.Format(TimeLayout)
+	return t.Format(timeLayout)
 }
 
 func StrToTime(timeStr string) (time.Time, error) {
-	return time.Parse(TimeLayout, timeStr)
+	return time.Parse(timeLayout, timeStr)
 }
 
 const shorthandParseError = "failed to parse shorthand time '%s'"
@@ -81,7 +81,7 @@ func ParseShorthandTime(input string, source time.Time) (time.Time, error) {
 	}
 
 	iso := fmt.Sprintf(
-		"%04d-%02d-%02d %02d:%02d:%02d %s",
+		"%04d-%02d-%02d %02d:%02d %s",
 		year,
 		month, // time.Month is implicitly convertible to an integer for %02d
 		day,
@@ -117,5 +117,5 @@ func formatOffset(sec int) string {
 
 	hours := absSec / 3600
 	minutes := (absSec % 3600) / 60
-	return fmt.Sprintf("%s%02d:%02d", sign, hours, minutes)
+	return fmt.Sprintf("%s%02d%02d", sign, hours, minutes)
 }

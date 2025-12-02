@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"me-go/db"
 	app "me-go/internal"
 	"me-go/internal/model"
@@ -61,36 +62,30 @@ func UpdateTaskEndAt(id int64, end_at time.Time) error {
 	return err
 }
 
-// func ListTasks(showAll bool) ([]model.Task, error) {
-// 	var query string
-// 	if showAll {
-// 		query = `SELECT id, caption, text, start_time, end_time FROM tasks`
-// 	} else {
-// 		query = `SELECT id, caption, text, start_time, end_time FROM tasks WHERE end_time IS NULL`
-// 	}
-//
-// 	rows, err := db.DB.Query(query)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer rows.Close()
-//
-// 	var tasks []model.Task
-// 	for rows.Next() {
-// 		var t model.Task
-// 		// We scan EndTime into a sql.NullTime or pointer to handle NULLs
-// 		// Here we strictly check for the pointer scan
-// 		err := rows.Scan(&t.ID, &t.Task, &t.Message, &t.StartAt, &t.EndAt, &t.CreatedAt, &t.UpdatedAt)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		tasks = append(tasks, t)
-// 	}
-// 	return tasks, nil
-// }
-//
-// func CompleteTask(id int) error {
-// 	query := `UPDATE tasks SET end_time = ? WHERE id = ?`
-// 	_, err := db.DB.Exec(query, time.Now(), id)
-// 	return err
-// }
+func ListTasks(pagination db.Pagination) ([]model.Task, error) {
+	query := fmt.Sprintf("SELECT * FROM tasks %s;", pagination.SqlFragment())
+	rows, err := db.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	tasks := make([]model.Task, 0, pagination.PerPage)
+	for rows.Next() {
+		var task model.Task
+		err := rows.Scan(
+			&task.ID,
+			&task.Task,
+			&task.Message,
+			&task.StartAt,
+			&task.EndAt,
+			&task.CreatedAt,
+			&task.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		tasks = append(tasks, task)
+	}
+	return tasks, nil
+}

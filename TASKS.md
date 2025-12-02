@@ -1,40 +1,21 @@
 # tasks v2
 [x] me21 create db
 [x] me22 create a task - only task & message
-[ ] me23 list tasks
+[x] me23 list tasks
 [ ] me24 edit task (task, message, start_at, end_at)
 [x] me25 finish task
 [ ] me26 continue task 
+[ ] me27 show previous and modified after saved
+[ ] me28 delete task by id with confirmation, use confirm for edits too
 
-## v2.1 ideas
-- shorthands like `me s` = `me start`
+# ideas
 - `me s t1 long free message`
+- try to give it some colors (ANSI codes brakes naive cell size meassurements)
 
-# tasks v1
-[ ] me6 cli me ls
-  - pagination
-[ ] me11 db backups rake task
-  - rake task to create empty DB (see lib/installation/create_database.sh)
-[ ] me15 release v3.0
-  - finish docs
-  - import dev_log from all projects
-  - me6
-  - me16
-[x] me16 end task
-  - me end date:time # ends last task if applicable
-[ ] me17 summary page
-[ ] me18 explore using TTY toolkit (command, config, etc)
-[ ] me19 integrate aws ec2 control
-[ ] me20 custom control InputSearch
+## v1 relicts
+- make docs
+- import 
+[ ] me17 summary page with vue.js
+[ ] me19 integrate aws ec2 control (major extension over tasks management)
+[ ] me20 custom control InputSearch (vue.js FE)
 
-# ideas v1.1
-- when create & edit, color the output green / red
-- create import script of dev logs (and check current data)
-- unify errors `bin/cli.rb e -a` `bin/cli.rb e -at=a`
-- rename task#text na #message, actuall make it #goal
-- run rails via cli command
-- document well cli commands
-
-# ideas v2.0 # TODO v2.0
-- move the cli to zig
-- move from web server to a native app with direct Sqlite bindings

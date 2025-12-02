@@ -2,8 +2,10 @@ package db
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
+	"fmt"
 	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 const DBPath = "var/db.sqlite"
@@ -26,4 +28,23 @@ func validateDatabase() {
 	if err != nil || count == 0 {
 		log.Fatal("DB: table 'tasks' doesn't exist. Use `bin/create_db.sh` or import from backup manually.")
 	}
+}
+
+type Pagination struct {
+	Page    int
+	PerPage int
+}
+
+func FirstTenPagination() Pagination {
+	return Pagination{
+		Page:    1,
+		PerPage: 10,
+	}
+}
+
+func (pagination Pagination) SqlFragment() string {
+	page := max(pagination.Page, 0)
+	perPage := max(pagination.PerPage, 0)
+	offset := (page - 1) * perPage
+	return fmt.Sprintf("LIMIT %d OFFSET %d", perPage, offset)
 }

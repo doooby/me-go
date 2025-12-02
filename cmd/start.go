@@ -10,7 +10,7 @@ import (
 
 func init() {
 	var cmd = &cobra.Command{
-		Use:     "start [message]",
+		Use:     "start task [message]",
 		Aliases: []string{"s"},
 		Short:   "Start a new task",
 		Args:    cobra.RangeArgs(1, 2),
