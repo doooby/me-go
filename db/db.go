@@ -6,7 +6,8 @@ import (
 	"log"
 )
 
-var DBPath = "var/db.sqlite"
+const DBPath = "var/db.sqlite"
+
 var DB *sql.DB
 
 func InitDB() {

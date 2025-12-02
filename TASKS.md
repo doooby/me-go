@@ -1,7 +1,14 @@
 # tasks v2
 [x] me21 create db
-[ ] me22 create a task - only task & message
+[x] me22 create a task - only task & message
 [ ] me23 list tasks
+[ ] me24 edit task (task, message, start_at, end_at)
+[x] me25 finish task
+[ ] me26 continue task 
+
+## v2.1 ideas
+- shorthands like `me s` = `me start`
+- `me s t1 long free message`
 
 # tasks v1
 [ ] me6 cli me ls

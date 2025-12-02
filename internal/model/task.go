@@ -1,13 +1,15 @@
 package model
 
-import "time"
+import (
+	"database/sql"
+)
 
 type Task struct {
-	ID        int        `json:"id"`
-	Task      string     `json:"task"`
-	Message   string     `json:"message"`
-	StartAt   time.Time  `json:"start_at"`
-	EndAt     *time.Time `json:"end_at"` 
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
+	ID        int64
+	Task      string
+	Message   sql.NullString
+	StartAt   string
+	EndAt     sql.NullString
+	CreatedAt string
+	UpdatedAt string
 }
