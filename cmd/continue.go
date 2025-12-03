@@ -1,20 +1,20 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"log"
 	app "me-go/internal"
 	"me-go/internal/model"
 	"me-go/internal/repository"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
 func init() {
-	var endTimeArg string
 	var cmd = &cobra.Command{
-		Use:     "finish [id] [-e end_at]",
-		Aliases: []string{"f"},
-		Short:   "Finish a task",
+		Use:     "continue [id]",
+		Aliases: []string{"c"},
+		Short:   "Continue on a task",
 		Args:    cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			var id int64
@@ -31,28 +31,15 @@ func init() {
 					log.Fatalf("Error: %v", err)
 				}
 			} else {
-				id, err = repository.FindUnfinishedId()
-				if err != nil {
-					log.Fatalf("Error: %v", err)
-				}
-				task, err = repository.FindTaskById(id)
+				task, err = repository.GetLastTask()
 				if err != nil {
 					log.Fatalf("Error: %v", err)
 				}
 			}
 
-      endAt := time.Now()
-			if len(endTimeArg) > 0 {
-				endAt, err = app.ParseShorthandTime(endTimeArg, endAt)
-				if err != nil {
-					log.Fatalf("Error: %v", err)
-				}
-			}
-
-			repository.UpdateTaskEndAt(task.ID, endAt)
+			repository.CreateTask(task.Task, task.Message, time.Now())
 		},
 	}
 
-	cmd.Flags().StringVarP(&endTimeArg, "end-at", "e", "", "end time")
 	rootCmd.AddCommand(cmd)
 }

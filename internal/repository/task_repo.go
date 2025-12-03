@@ -23,7 +23,9 @@ func CreateTask(taskName string, message sql.NullString, startAt time.Time) (int
 }
 
 func FindUnfinishedId() (int64, error) {
-	query := "SELECT id FROM tasks WHERE id = (SELECT MAX(id) FROM tasks) AND end_at IS NULL;"
+	query := "SELECT id FROM tasks WHERE id = (" +
+		"SELECT id FROM tasks ORDER BY id DESC LIMIT 1" +
+		") AND end_at IS NULL;"
 	var id int64
 	err := db.DB.QueryRow(query).Scan(&id)
 	if err != nil {
@@ -33,7 +35,7 @@ func FindUnfinishedId() (int64, error) {
 }
 
 func FindTaskById(id int64) (model.Task, error) {
-	query := "SELECT * FROM tasks WHERE id = ?"
+	query := "SELECT * FROM tasks WHERE id = ?;"
 	var task model.Task
 	err := db.DB.QueryRow(query, id).Scan(
 		&task.ID,
@@ -50,8 +52,26 @@ func FindTaskById(id int64) (model.Task, error) {
 	return task, nil
 }
 
+func GetLastTask() (model.Task, error) {
+	query := "SELECT * FROM tasks ORDER BY id DESC LIMIT 1;"
+	var task model.Task
+	err := db.DB.QueryRow(query).Scan(
+		&task.ID,
+		&task.Task,
+		&task.Message,
+		&task.StartAt,
+		&task.EndAt,
+		&task.CreatedAt,
+		&task.UpdatedAt,
+	)
+	if err != nil {
+		return model.Task{}, err
+	}
+	return task, nil
+}
+
 func UpdateTaskEndAt(id int64, end_at time.Time) error {
-	query := "UPDATE tasks SET end_at = ?, updated_at = ? WHERE id = ?"
+	query := "UPDATE tasks SET end_at = ?, updated_at = ? WHERE id = ?;"
 	result, err := db.DB.Exec(query, app.TimeToStr(end_at), app.TimeToStr(time.Now()), id)
 	if err == nil {
 		rowsAffected, err := result.RowsAffected()
@@ -63,7 +83,7 @@ func UpdateTaskEndAt(id int64, end_at time.Time) error {
 }
 
 func ListTasks(pagination db.Pagination) ([]model.Task, error) {
-	query := fmt.Sprintf("SELECT * FROM tasks %s;", pagination.SqlFragment())
+	query := fmt.Sprintf("SELECT * FROM tasks ORDER BY id DESC %s;", pagination.SqlFragment())
 	rows, err := db.DB.Query(query)
 	if err != nil {
 		return nil, err
